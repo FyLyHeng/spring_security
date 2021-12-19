@@ -1,15 +1,19 @@
 package com.example.spring_security.securityConfig
 
+import com.example.spring_security.securityConfig.jwtConfig.JwtRequestFilter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.NoOpPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 
 @EnableWebSecurity
@@ -22,6 +26,9 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Qualifier("userDetailServiceImp")
     @Autowired
     lateinit var userDetailsService: UserDetailsService
+
+    @Autowired
+    lateinit var jwtRequestFilter: JwtRequestFilter
 
 
     /**
@@ -65,27 +72,38 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
-        http.authorizeRequests()
-                .antMatchers("/").permitAll()
+
+        http.csrf().disable()
+                .authorizeRequests().antMatchers("/auth/login").permitAll()
                 .antMatchers("/admin").hasRole("ADMIN")
                 .antMatchers("/user").hasAnyRole("USER","ADMIN")
 
-                .and().formLogin()
+                .anyRequest().authenticated()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+        http.addFilterBefore(jwtRequestFilter,UsernamePasswordAuthenticationFilter::class.java)
     }
 
 
 
 
-
+    @Bean
+    override fun authenticationManagerBean(): AuthenticationManager {
+        return super.authenticationManagerBean()
+    }
 
     /**
      * this Fun need to exist.
      */
-
     @Bean
     fun passwordEncoder(): PasswordEncoder? {
         return NoOpPasswordEncoder.getInstance()
     }
+
+
+
 
 
 }

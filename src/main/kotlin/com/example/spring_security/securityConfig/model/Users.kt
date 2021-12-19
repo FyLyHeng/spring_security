@@ -20,7 +20,6 @@ data class Users (
         var isActive: Boolean = true,
 
         @JsonIgnore
-//        @OneToMany(mappedBy = "users",fetch = FetchType.LAZY)
         @OneToMany(mappedBy = "users",fetch = FetchType.EAGER)
         var userRole: MutableList<UserRole>?=null
 )

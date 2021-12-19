@@ -12,7 +12,6 @@ data class UserRole(
 
 
         @JsonIgnoreProperties("hibernateLazyInitializer", "handler")
-        //@ManyToOne(fetch = FetchType.LAZY, optional = false)
         @ManyToOne(fetch = FetchType.EAGER, optional = false)
         @JoinColumn(name = "users_id")
         @JsonIgnore
@@ -20,7 +19,6 @@ data class UserRole(
 
 
         @JsonIgnoreProperties("hibernateLazyInitializer", "handler")
-        //@ManyToOne(fetch = FetchType.LAZY, optional = false)
         @ManyToOne(fetch = FetchType.EAGER, optional = false)
         @JoinColumn(name = "role_id")
         @JsonIgnore

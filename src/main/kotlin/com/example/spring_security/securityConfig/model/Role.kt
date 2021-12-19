@@ -16,7 +16,6 @@ class Role(
 
 
         @JsonIgnore
-        //@OneToMany(mappedBy = "role", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
         @OneToMany(mappedBy = "role", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
         var userRole: MutableList<UserRole>? = null
 
