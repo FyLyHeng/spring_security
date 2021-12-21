@@ -39,12 +39,7 @@ class JwtRequestFilter : OncePerRequestFilter() {
         var username: String? = null
         var jwt :String?=null
 
-        println("##   $authorizationHeader")
-
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-
-            println("##@   $authorizationHeader")
-
 
             jwt = authorizationHeader.substring(7)
             username = jwtUtils.extractUsername(jwt)

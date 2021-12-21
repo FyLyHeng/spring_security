@@ -1,11 +1,14 @@
 package com.example.spring_security.securityConfig
 
 import com.example.spring_security.securityConfig.jwtConfig.JwtRequestFilter
+import com.example.spring_security.service.RequestMappingService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
@@ -16,7 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 
+@Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 class SecurityConfig : WebSecurityConfigurerAdapter() {
 
 
@@ -29,6 +34,9 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
     lateinit var jwtRequestFilter: JwtRequestFilter
+
+    @Autowired
+    lateinit var requestMapping: RequestMappingService
 
 
     /**
@@ -73,17 +81,30 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
 
-        http.csrf().disable()
-                .authorizeRequests().antMatchers("/auth/login").permitAll()
-                .antMatchers("/admin").hasRole("ADMIN")
-                .antMatchers("/user").hasAnyRole("USER","ADMIN")
+        requestMapping.loadRequestMap()
 
+        http.csrf().disable()
+
+        /*
+        .authorizeRequests().antMatchers("/auth/login").permitAll()
+        .antMatchers("/admin").hasRole("ADMIN")
+        .antMatchers("/user").hasAnyRole("USER","ADMIN")
+        */
+
+        .authorizeRequests().antMatchers(*requestMapping.REQUEST_MAPPING_PERMITALL.toTypedArray()).permitAll()
+
+        requestMapping.REQUEST_MAPPING.forEach {URL, ROLES->
+            http.authorizeRequests().antMatchers(URL).hasAnyAuthority(*ROLES.toTypedArray())
+        }
+
+
+        http.authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-        http.addFilterBefore(jwtRequestFilter,UsernamePasswordAuthenticationFilter::class.java)
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
     }
 
 

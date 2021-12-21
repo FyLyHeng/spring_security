@@ -1,10 +1,13 @@
 package com.example.spring_security.securityConfig.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import javax.persistence.*
 
 @Entity
-data class Users (
+@JsonIgnoreProperties(value = ["password"], allowSetters = true)
+@Table(indexes = [Index(columnList = "username"),Index(columnList = "email")])
+class Users (
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Long? = null,

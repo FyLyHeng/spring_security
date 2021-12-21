@@ -1,5 +1,6 @@
 package com.example.spring_security.securityConfig.jwtConfig
 
+import com.example.spring_security.securityConfig.jwtConfig.model.JwtResponse
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
@@ -13,6 +14,7 @@ import java.util.function.Function
 @Component
 class JwtUtils {
     private val SECRET_KEY = "secret"
+    private val JWT_TOKEN_VALIDITY: Long = 30 * 24 * 60 * 60
 
     fun extractUsername(token: String): String {
         return extractClaim(token, Function { it.subject })
@@ -37,20 +39,23 @@ class JwtUtils {
 
 
 
-    fun generateToken(userDetails: UserDetails): String {
+    fun generateToken(userDetails: UserDetails): JwtResponse {
         val claims: Map<String, Any> = HashMap()
         return createToken(claims, userDetails.username)
     }
 
 
 
-    private fun createToken(claims: Map<String, Any>, subject: String): String {
-        return Jwts.builder()
+    private fun createToken(claims: Map<String, Any>, subject: String): JwtResponse {
+        val expire = Date(System.currentTimeMillis() +  JWT_TOKEN_VALIDITY)
+         val token = Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(Date(System.currentTimeMillis()))
-                .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .setExpiration(expire)
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact()
+
+        return JwtResponse(token,expire)
     }
 
 

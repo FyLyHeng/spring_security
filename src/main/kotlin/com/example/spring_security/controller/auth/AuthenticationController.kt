@@ -37,12 +37,19 @@ class AuthenticationController {
 
         authenticate(userDetails.username!!, authenticationRequest.password)
 
-        val token = jwtUtils.generateToken(userDetails)
+        val jwt = jwtUtils.generateToken(userDetails)
 
-        println("Gen-token : $token")
+        println("Token : ${jwt.token}")
 
-        return ResponseEntity.ok(JwtResponse(token, Date()))
+        return ResponseEntity.ok(JwtResponse(jwt.token, jwt.expireIn))
     }
+
+
+    //fun : Register new user
+    //fun : Update User
+    //fun : Set Role to user
+    //fun : Remove Role from user
+    //fun : Block User
 
 
     @Throws(Exception::class)
