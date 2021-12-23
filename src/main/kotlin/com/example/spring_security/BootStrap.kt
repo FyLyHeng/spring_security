@@ -51,11 +51,11 @@ class BootStrap : CommandLineRunner {
      */
     private fun initDefaultUserLogin (){
         userRepository.findAll().forEach {
-            if (it.username == "admin"){
+            if (it.username == "admin" && it.userRole == null){
                 userRoleRepository.save(UserRole(users = it, role = roleRepository.findByRoleName("ROLE_ADMIN")))
             }
 
-            if (it.username == "user"){
+            if (it.username == "user" && it.userRole == null){
                 userRoleRepository.save(UserRole(users = it, role = roleRepository.findByRoleName("ROLE_USER")))
             }
         }
@@ -105,12 +105,17 @@ class BootStrap : CommandLineRunner {
 
         val defaultRequestMapping = mutableMapOf(
                 "/user" to "ROLE_ADMIN, ROLE_USER",
-                "/admin" to "ROLE_ADMIN"
+                "/admin" to "ROLE_ADMIN",
+                "/auth/**" to "permitAll"
         )
 
         defaultRequestMapping.forEach {url, auth->
             if (requestMappingRepository.findByUrl(url) == null ){
-                requestMappingRepository.save(RequestMapping(httpMethod = "All", configAttribute = auth,url = url))
+                var isPermitAll = false
+                if (auth =="permitAll"){
+                    isPermitAll = true
+                }
+                requestMappingRepository.save(RequestMapping(httpMethod = "All", configAttribute = auth,url = url, isPermitAll = isPermitAll))
             }
         }
     }

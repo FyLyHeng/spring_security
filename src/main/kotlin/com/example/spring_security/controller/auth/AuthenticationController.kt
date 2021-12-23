@@ -3,9 +3,9 @@ package com.example.spring_security.controller.auth
 import com.example.spring_security.securityConfig.UserDetailServiceImp
 import com.example.spring_security.securityConfig.jwtConfig.JwtUtils
 import com.example.spring_security.securityConfig.jwtConfig.model.JwtRequest
-import com.example.spring_security.securityConfig.jwtConfig.model.JwtResponse
+import com.example.spring_security.service.UserService
+import com.example.spring_security.simpleResponce.ResponseObjectMap
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.DisabledException
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
 
 @RestController
 @RequestMapping("/auth")
@@ -26,22 +25,36 @@ class AuthenticationController {
     @Autowired
     lateinit var userDetailsService : UserDetailServiceImp
 
+    val response = ResponseObjectMap()
+
+    @Autowired
+    lateinit var userService: UserService
+
 
 
     @PostMapping("/login")
-    fun login (@RequestBody authenticationRequest: JwtRequest): ResponseEntity<JwtResponse> {
+    fun login (@RequestBody authenticationRequest: JwtRequest): MutableMap<String, Any> {
 
+        println("Log:: read user from DB")
 
         val username: String = authenticationRequest.username
         val userDetails = userDetailsService.loadUserByUsername(username)
 
-        authenticate(userDetails.username!!, authenticationRequest.password)
+        //verify auth-role
+        validateAuthenticate(userDetails.username!!, authenticationRequest.password)
 
+        //generate new Token
         val jwt = jwtUtils.generateToken(userDetails)
 
-        println("Token : ${jwt.token}")
 
-        return ResponseEntity.ok(JwtResponse(jwt.token, jwt.expireIn))
+        userService.deleteOldUserToken(username)
+
+        //set user to redis
+        userService.addUserRedis(jwt.token, userDetails)
+
+
+        println("Token : ${jwt.token}")
+        return response.responseObject(jwt)
     }
 
 
@@ -53,7 +66,7 @@ class AuthenticationController {
 
 
     @Throws(Exception::class)
-    private fun authenticate(username: String, password: String) {
+    private fun validateAuthenticate(username: String, password: String) {
         try {
             authenticationManager.authenticate(UsernamePasswordAuthenticationToken(username, password))
         } catch (e: DisabledException) {

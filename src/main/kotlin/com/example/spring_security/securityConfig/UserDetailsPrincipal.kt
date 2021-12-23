@@ -7,12 +7,12 @@ import org.springframework.security.core.userdetails.UserDetails
 class UserDetailsPrincipal(var id: Long, var name: String, var email: String?, var pass: String, val auth: MutableCollection<out GrantedAuthority>?) : UserDetails {
 
 
-
     companion object {
         fun create(id: Long,name:String,email:String?,password: String,authorities: MutableCollection<out GrantedAuthority>?): UserDetailsPrincipal {
             return UserDetailsPrincipal(id,name,email,password,authorities)
         }
     }
+
 
 
 

@@ -25,9 +25,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfig : WebSecurityConfigurerAdapter() {
 
 
-//    @Autowired
-//    lateinit var dataSource : DataSource
-
     @Qualifier("userDetailServiceImp")
     @Autowired
     lateinit var userDetailsService: UserDetailsService
@@ -64,6 +61,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
 
         //Load User by JPA implement
+        println("by spring sec")
         auth.userDetailsService(userDetailsService)
 
     }
@@ -103,8 +101,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                //.and().exceptionHandling().accessDeniedHandler(userAccessDeniedException)
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
+        http.headers().cacheControl()
     }
 
 

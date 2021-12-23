@@ -13,8 +13,8 @@ import java.util.function.Function
 
 @Component
 class JwtUtils {
-    private val SECRET_KEY = "secret"
-    private val JWT_TOKEN_VALIDITY: Long = 30 * 24 * 60 * 60
+    val SECRET_KEY = "secret"
+    val JWT_TOKEN_VALIDITY: Long = 30 * 24 * 60 * 60
 
     fun extractUsername(token: String): String {
         return extractClaim(token, Function { it.subject })
