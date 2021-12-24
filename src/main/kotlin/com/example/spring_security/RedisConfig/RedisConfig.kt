@@ -1,14 +1,15 @@
 package com.example.spring_security.RedisConfig
 
 
-import com.example.spring_security.securityConfig.UserDetailsPrincipal
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.PropertyAccessor
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
+import org.springframework.data.redis.connection.RedisPassword
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration.JedisPoolingClientConfigurationBuilder
@@ -26,15 +27,26 @@ import org.springframework.data.redis.serializer.StringRedisSerializer
 @EnableRedisRepositories
 class RedisConfig {
 
+    //redis connection config
+    @Value("\${spring.redis.host}") val HOST: String? = "localhost"
+    @Value("\${spring.redis.port}") val PORT: Int? = 6379
+    @Value("\${spring.redis.database}") val DATABASE: Int? = 4
+    @Value("\${spring.redis.password}") val PASSWORD: String? = null
+
+    //pool config
+    @Value("\${spring.redis.jedis.pool.max-active}") val maxTotal: Int? = 16
+    @Value("\${spring.redis.jedis.pool.max-idle}") val maxIdle: Int? = 8
+    @Value("\${spring.redis.jedis.pool.min-idle}") val minIdle: Int? = 4
+
 
     @Bean
     fun redisPoolConfig(): JedisClientConfiguration {
         val JedisPoolingClientConfigurationBuilder = JedisClientConfiguration
                 .builder() as JedisPoolingClientConfigurationBuilder
         val GenericObjectPoolConfig: GenericObjectPoolConfig<*> = GenericObjectPoolConfig<Any?>()
-        GenericObjectPoolConfig.maxTotal = 16
-        GenericObjectPoolConfig.maxIdle = 8
-        GenericObjectPoolConfig.minIdle = 4
+        GenericObjectPoolConfig.maxTotal = maxTotal!!
+        GenericObjectPoolConfig.maxIdle = maxIdle!!
+        GenericObjectPoolConfig.minIdle = minIdle!!
         return JedisPoolingClientConfigurationBuilder.poolConfig(GenericObjectPoolConfig).build()
     }
 
@@ -42,9 +54,10 @@ class RedisConfig {
     @Bean
     fun connectionFactory(): JedisConnectionFactory {
         val config = RedisStandaloneConfiguration()
-        config.hostName = "localhost"
-        config.port = 6379
-        config.database =3
+        config.hostName = HOST!!
+        config.port = PORT!!
+        config.database = DATABASE!!
+        config.password = RedisPassword.of(PASSWORD)
         return JedisConnectionFactory(config)
     }
 
@@ -88,7 +101,7 @@ class RedisConfig {
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY)
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL)
         jackson2JsonRedisSerializer.setObjectMapper(om)
-        redisTemplate.valueSerializer = jackson2JsonRedisSerializer
+        //redisTemplate.valueSerializer = jackson2JsonRedisSerializer
 
         connectionFactory().afterPropertiesSet()
         redisTemplate.setConnectionFactory(connectionFactory())

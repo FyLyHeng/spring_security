@@ -24,33 +24,44 @@ class UserService {
     //fun : Remove Role from user
     //fun : Block User
 
+
+//############### Redis Operation ###############
+
+    /**
+     * @Delete current token
+     *
+     * this process is delete current token & remove token from list token of this user
+     */
     fun deleteOldUserToken (username: String){
 
-        val currentToken =  userRedisRepository.getTokenByUserName(username)
-        userRedisRepository.deleteAuth(currentToken)
-        userRedisRepository.removeSecUser(username)
+        userRedisRepository.getTokenByUserName(username)?.let {
+            userRedisRepository.deleteAuth(it)
+            userRedisRepository.removeTokenFromSecUser(username)
+        }
     }
 
     fun addUserRedis (token:String, user: UserDetailsPrincipal){
         userRedisRepository.setAuth(token, user,jwtUtils.JWT_TOKEN_VALIDITY)
+        userRedisRepository.addTokenToSecUser(user.username!!,token,jwtUtils.JWT_TOKEN_VALIDITY)
     }
 
-    fun addSecUserRedis (username: String, token: String) {
-        //userRedisRepository.setSecUser()
+    fun getUserFromRedis (token: String) : UserDetailsPrincipal?{
+        return userRedisRepository.getAuth(token)
+    }
+
+
+
+//############### DataBase Operation ###############
+
+    fun getUser(username:String) : Users?{
+        return userRepository.findByUsername(username)
     }
 
     fun saveUser (users:Users): Users {
         return userRepository.save(users)
     }
 
+    fun addRoleToUer (username: String, roleName:String) {
 
-    fun getUserFromRedis (token: String) : UserDetailsPrincipal?{
-        return userRedisRepository.getAuth(token)
     }
-
-    fun getUser(username:String) : Users?{
-        return userRepository.findByUsername(username)
-    }
-
-
 }

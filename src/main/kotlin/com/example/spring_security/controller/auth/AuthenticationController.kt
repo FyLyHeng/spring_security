@@ -10,10 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.DisabledException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/auth")
@@ -58,10 +55,38 @@ class AuthenticationController {
     }
 
 
+    @GetMapping("/logout")
+    fun logout (){
+        //check is token exist
+        //delete Auth
+        //remove token from list token of user
+        //return
+    }
+
+
+    @PutMapping("/addRoleToUser")
+    //admin role only
+    fun addRoleToUser (){
+        //check is user exist by username
+        //check role
+        //do add role
+        //return
+
+    }
+
+
+    @PutMapping("/removeRoleToUser")
+    //admin role only
+    fun removeRoleFromUser (){
+        //check is user exist by username
+        //check role
+        //do remove role
+        //return
+    }
+
+
     //fun : Register new user
-    //fun : Update User
-    //fun : Set Role to user
-    //fun : Remove Role from user
+    //fun : Update User obj
     //fun : Block User
 
 
