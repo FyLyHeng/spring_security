@@ -1,8 +1,10 @@
 package com.example.spring_security.controller.auth
 
 import com.example.spring_security.securityConfig.UserDetailServiceImp
+import com.example.spring_security.securityConfig.UserDetailsPrincipal
 import com.example.spring_security.securityConfig.jwtConfig.JwtUtils
 import com.example.spring_security.securityConfig.jwtConfig.model.JwtRequest
+import com.example.spring_security.securityConfig.model.Users
 import com.example.spring_security.service.UserService
 import com.example.spring_security.simpleResponce.ResponseObjectMap
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,7 +12,9 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.DisabledException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
+
 
 @RestController
 @RequestMapping("/auth")
@@ -30,7 +34,7 @@ class AuthenticationController {
 
 
     @PostMapping("/login")
-    fun login (@RequestBody authenticationRequest: JwtRequest): MutableMap<String, Any> {
+    fun login(@RequestBody authenticationRequest: JwtRequest): MutableMap<String, Any> {
 
         println("Log:: read user from DB")
 
@@ -61,6 +65,12 @@ class AuthenticationController {
         //delete Auth
         //remove token from list token of user
         //return
+    }
+
+
+    fun currentLogin (): Users? {
+        val auth = SecurityContextHolder.getContext().authentication.principal as UserDetailsPrincipal
+        return userService.getUser(auth.name)
     }
 
 

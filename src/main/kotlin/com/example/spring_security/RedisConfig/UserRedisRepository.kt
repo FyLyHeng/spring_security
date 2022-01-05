@@ -4,7 +4,6 @@ import com.example.spring_security.securityConfig.UserDetailsPrincipal
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.redis.core.RedisTemplate
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Repository
 import java.util.concurrent.TimeUnit
 
