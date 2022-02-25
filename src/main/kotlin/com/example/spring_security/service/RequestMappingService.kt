@@ -1,6 +1,6 @@
 package com.example.spring_security.service
 
-import com.example.spring_security.securityConfig.model.repo.RequestMappingRepository
+import com.example.spring_security.configuration.securityConfig.model.repo.RequestMappingRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 

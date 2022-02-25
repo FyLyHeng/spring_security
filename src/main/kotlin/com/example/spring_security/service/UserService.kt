@@ -1,10 +1,10 @@
 package com.example.spring_security.service
 
-import com.example.spring_security.RedisConfig.UserRedisRepository
-import com.example.spring_security.securityConfig.UserDetailsPrincipal
-import com.example.spring_security.securityConfig.jwtConfig.JwtUtils
-import com.example.spring_security.securityConfig.model.Users
-import com.example.spring_security.securityConfig.model.repo.UserRepository
+import com.example.spring_security.configuration.RedisConfig.UserRedisRepository
+import com.example.spring_security.configuration.securityConfig.UserDetailsPrincipal
+import com.example.spring_security.configuration.securityConfig.jwtConfig.JwtUtils
+import com.example.spring_security.configuration.securityConfig.model.Users
+import com.example.spring_security.configuration.securityConfig.model.repo.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 

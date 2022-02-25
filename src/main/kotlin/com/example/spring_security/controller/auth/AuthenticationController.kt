@@ -1,10 +1,10 @@
 package com.example.spring_security.controller.auth
 
-import com.example.spring_security.securityConfig.UserDetailServiceImp
-import com.example.spring_security.securityConfig.UserDetailsPrincipal
-import com.example.spring_security.securityConfig.jwtConfig.JwtUtils
-import com.example.spring_security.securityConfig.jwtConfig.model.JwtRequest
-import com.example.spring_security.securityConfig.model.Users
+import com.example.spring_security.configuration.securityConfig.UserDetailServiceImp
+import com.example.spring_security.configuration.securityConfig.UserDetailsPrincipal
+import com.example.spring_security.configuration.securityConfig.jwtConfig.JwtUtils
+import com.example.spring_security.configuration.securityConfig.jwtConfig.model.JwtRequest
+import com.example.spring_security.configuration.securityConfig.model.Users
 import com.example.spring_security.service.UserService
 import com.example.spring_security.simpleResponce.ResponseObjectMap
 import org.springframework.beans.factory.annotation.Autowired

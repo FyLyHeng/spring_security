@@ -1,13 +1,13 @@
 package com.example.spring_security
 
-import com.example.spring_security.securityConfig.model.RequestMapping
-import com.example.spring_security.securityConfig.model.Role
-import com.example.spring_security.securityConfig.model.UserRole
-import com.example.spring_security.securityConfig.model.Users
-import com.example.spring_security.securityConfig.model.repo.RequestMappingRepository
-import com.example.spring_security.securityConfig.model.repo.RoleRepository
-import com.example.spring_security.securityConfig.model.repo.UserRepository
-import com.example.spring_security.securityConfig.model.repo.UserRoleRepository
+import com.example.spring_security.configuration.securityConfig.model.RequestMapping
+import com.example.spring_security.configuration.securityConfig.model.Role
+import com.example.spring_security.configuration.securityConfig.model.UserRole
+import com.example.spring_security.configuration.securityConfig.model.Users
+import com.example.spring_security.configuration.securityConfig.model.repo.RequestMappingRepository
+import com.example.spring_security.configuration.securityConfig.model.repo.RoleRepository
+import com.example.spring_security.configuration.securityConfig.model.repo.UserRepository
+import com.example.spring_security.configuration.securityConfig.model.repo.UserRoleRepository
 import com.example.spring_security.service.RequestMappingService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner

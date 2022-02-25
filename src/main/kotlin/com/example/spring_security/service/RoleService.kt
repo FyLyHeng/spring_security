@@ -1,7 +1,7 @@
 package com.example.spring_security.service
 
-import com.example.spring_security.securityConfig.model.UserRole
-import com.example.spring_security.securityConfig.model.repo.RoleRepository
+import com.example.spring_security.configuration.securityConfig.model.UserRole
+import com.example.spring_security.configuration.securityConfig.model.repo.RoleRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Service
